@@ -14,3 +14,7 @@ By mostly reproducing the commands that github actions run with docker buildx, t
 - run `docker buildx prune --all`, to remove cache on the machine (shouldn't affect the exported cache from previous steps) - this simulates the fact that a github actions build starts from a fresh machine (where there wouldn't be any cache yet)
 - run the same docker buildx again, using --cache-from pointing at the local directory where cache was previously exported to
 - all layers in the first stage are rebuilt from scratch
+
+If I don't run the `docker buildx prune --all` step, the it works like with regular docker build. But that doesn't match the setup on github actions (where I ran into this problem) - the build environment there is fresh with no cache (other than the one manually imported via the cache action).
+
+If I *do* run `docker buildx prune --all`, but then don't change the `main.rs` file, it will use layers from the imported cache correctly.
